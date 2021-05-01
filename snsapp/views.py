@@ -133,7 +133,7 @@ class FollowList(LoginRequiredMixin, ListView):
         return Post.objects.filter(user__in=all_follow)
         
         """
-        元々のコード(all_followより以下)
+        元々のコード(all_follow = ...より以下)
         for user in all_follow:
            return Post.objects.filter(user=user)
         
