@@ -31,9 +31,11 @@
               <a class="nav-link btn btn-success" href="{% url 'create' %}" role="button">投稿</a>
             </div>
           </div>
-          <div>
-            {{request.user.username}}さん
-          </div>
+          <form class="d-flex" action="{% url 'search' %}" method="GET">
+            <p class='mb-0 nav-link w-100'>{{request.user.username}}さん</p>
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="key_word" value="{{ request.GET.key_word }}">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
         </div>
       </nav>
 

@@ -42,7 +42,14 @@ INSTALLED_APPS = [
     'allauth.account', 
     'allauth.socialaccount', 
     'snsapp.apps.SnsappConfig',
+    'django_elasticsearch_dsl',
 ]
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -144,3 +151,5 @@ SITE_ID = 1                                #おまじない。(django.contrib.si
 
 LOGIN_REDIRECT_URL = 'home'            #ログイン成功時のリダイレクトページ                        
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'  #ログアウト成功時のリダイレクトページ
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
