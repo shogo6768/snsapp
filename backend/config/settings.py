@@ -39,12 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'allauth',
-    'allauth.account', 
-    'allauth.socialaccount', 
+    'allauth.account',
+    'allauth.socialaccount',
     'snsapp.apps.SnsappConfig',
+    'rest_framework',               # 追加
+    'rest_framework.authtoken',     # 追加
+    'corsheaders',                  # 追加
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',                    # 追加
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,6 +56,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# リアクトのホストURLをAPIの叩きもととして登録
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -142,5 +151,5 @@ ACCOUNT_EMAIL_REQUIRED = True              #EMAILをモデル上で入力必須�
 
 SITE_ID = 1                                #おまじない。(django.contrib.sites利用時に必要な設定だが、意味は押さえなくていい。)
 
-LOGIN_REDIRECT_URL = 'home'            #ログイン成功時のリダイレクトページ                        
+LOGIN_REDIRECT_URL = 'home'            #ログイン成功時のリダイレクトページ
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'  #ログアウト成功時のリダイレクトページ
