@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block customcss %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+<link rel="stylesheet" href="{% static 'style.css' %}">
 {% endblock customcss %}
 
 {% block content %}
@@ -10,12 +10,14 @@
     {% for item in object_list %}
     <div class="alert alert-success" role="alert">
         <p>タイトル：<a href="{% url 'detail' item.pk %}">{{item.title}}</a></p>
-        <p>投稿者：{{item.user}}</p>    
+        <p>投稿者：{{item.user}}</p>
 
         {% if request.user in item.like.all %}
-        <a href="{% url 'like-home' item.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>{{item.like.count}}
+        <!-- <a href="{% url 'like-home' item.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>{{item.like.count}} -->
+        <a class="like-btn" tabindex="-1" name="{{ item.id }}" value="{{ item.like.count }}" role="button" aria-disabled="true"><i class="fas fa-heart add-color"></i>{{item.like.count}}</a>
         {% else %}
-        <a href="{% url 'like-home' item.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}}
+        <!-- <a href="{% url 'like-home' item.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}} -->
+        <a class="like-btn" tabindex="-1" name="{{ item.id }}" value="{{ item.like.count }}" role="button" aria-disabled="true"><i class="fas fa-heart"></i>{{item.like.count}}</a>
         {% endif %}
 
         {% if item.user in connection.0.following.all %}
