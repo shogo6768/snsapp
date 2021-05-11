@@ -42,13 +42,17 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'snsapp.apps.SnsappConfig',
-    'rest_framework',               # 追加
-    'rest_framework.authtoken',     # 追加
-    'corsheaders',                  # 追加
+    'sns_api.apps.SnsApiConfig',    # 追加　SNSappのAPI用アプリ
+    'rest_framework',               # 追加　DRFライブラリ全般
+    'rest_auth',                    # 追加　DRF-allauthの標準API一式
+    'rest_auth.registration',       # 追加　DRF-allauthのWebコンソール機能
+    'rest_framework.authtoken',     # 追加　DRF-allauthのloginに使用
+    'django_filters',               # 追加　フィルタ付きのAPIビュー用
+    'corsheaders',                  # 追加　Reactサーバーからのアクセス許可機能
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',                    # 追加
+    'corsheaders.middleware.CorsMiddleware',                    # 追加　Reactサーバーからのアクセス許可機能
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,10 +62,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# リアクトのホストURLをAPIの叩きもととして登録
+# ReactサーバーでDRFのAPIを叩くために設定
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
+    'http://localhost:3000',    # ReactサーバーのIP:ポートをホワイトリストに追加
 ]
+
+# REST Framework共通設定
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # 追加　セッションID認証を共通設定に追加
+    ],
+}
 
 ROOT_URLCONF = 'config.urls'
 
@@ -139,17 +150,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 ###### ↓認証系の設定 #####
 AUTHENTICATION_BACKENDS = (
-   'django.contrib.auth.backends.ModelBackend',            #おまじない
-   'allauth.account.auth_backends.AuthenticationBackend',  #おまじない（ライブラリ使用のために追記）
+    'django.contrib.auth.backends.ModelBackend',  # おまじない
+    'allauth.account.auth_backends.AuthenticationBackend',  # おまじない（ライブラリ使用のために追記）
 )
 
-ACCOUNT_AUTHENTICATION_METHOD = 'username'    #ログイン認証方法にemailを選定
-ACCOUNT_USERNAME_REQUIRED = True           #USERNAMEをモデル上で入力任意に設定
+ACCOUNT_AUTHENTICATION_METHOD = 'username'  # ログイン認証方法にemailを選定
+ACCOUNT_USERNAME_REQUIRED = True  # USERNAMEをモデル上で入力任意に設定
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'   #ユーザー登録時に、メール認証を実行する宣言（開発環境では'none'推奨）
-ACCOUNT_EMAIL_REQUIRED = True              #EMAILをモデル上で入力必須に設定
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # ユーザー登録時に、メール認証を実行する宣言（開発環境では'none'推奨）
+ACCOUNT_EMAIL_REQUIRED = True  # EMAILをモデル上で入力必須に設定
 
-SITE_ID = 1                                #おまじない。(django.contrib.sites利用時に必要な設定だが、意味は押さえなくていい。)
+SITE_ID = 1  # おまじない。(django.contrib.sites利用時に必要な設定だが、意味は押さえなくていい。)
 
-LOGIN_REDIRECT_URL = 'home'            #ログイン成功時のリダイレクトページ
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'  #ログアウト成功時のリダイレクトページ
+LOGIN_REDIRECT_URL = '/'  # ログイン成功時のリダイレクトページ
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'  # ログアウト成功時のリダイレクトページ

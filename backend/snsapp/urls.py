@@ -1,10 +1,5 @@
 from django.urls import path
-from rest_framework import routers
 from snsapp.views import Home, MyPost, CreatePost, DetailPage, LikeHome, FollowHome, FollowDetail, FollowList, LikeDetail
-
-router = routers.DefaultRouter()
-router.register('posts', PostViewSet)
-router.register('users', UserViewSet)
 
 urlpatterns = [
     path('', Home.as_view(), name='home'),

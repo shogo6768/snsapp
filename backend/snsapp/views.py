@@ -16,13 +16,13 @@ class Home(LoginRequiredMixin, ListView):
     def get_queryset(self):
         """リクエストユーザーのみ除外"""
         return Post.objects.all().exclude(user=self.request.user)
-    
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         #get_or_createにしないとサインアップ時オブジェクトがないためエラーになる
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
-    
+
 
 class MyPost(LoginRequiredMixin, ListView):
     """自分の投稿のみ表示"""
@@ -70,7 +70,7 @@ class LikeBase(LoginRequiredMixin, View):
         if self.request.user in related_post.like.all():
             obj = related_post.like.remove(self.request.user)
         else:
-            obj = related_post.like.add(self.request.user)  
+            obj = related_post.like.add(self.request.user)
         return obj
 
 
@@ -85,7 +85,7 @@ class LikeDetail(LikeBase):
     """詳細ページでいいねした場合"""
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
-        pk = self.kwargs['pk'] 
+        pk = self.kwargs['pk']
         return redirect('detail', pk)
 ###############################################################
 
@@ -116,7 +116,7 @@ class FollowDetail(FollowBase):
     """詳細ページでフォローした場合"""
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
-        pk = self.kwargs['pk'] 
+        pk = self.kwargs['pk']
         return redirect('detail', pk)
 ###############################################################
 
@@ -131,12 +131,12 @@ class FollowList(LoginRequiredMixin, ListView):
         my_connection = Connection.objects.get_or_create(user=self.request.user)
         all_follow = my_connection[0].following.all()
         return Post.objects.filter(user__in=all_follow)
-        
+
         """
         元々のコード(all_follow = ...より以下)
         for user in all_follow:
            return Post.objects.filter(user=user)
-        
+
         これだと1user分のクエリしかリターンしない
         """
 
@@ -144,5 +144,3 @@ class FollowList(LoginRequiredMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
-
-

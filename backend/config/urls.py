@@ -5,6 +5,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')), 
-    path('', include('snsapp.urls')), 
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('accounts/', include('allauth.urls')),
+    path('rest-auth/', include('rest_auth.urls')),  # 追加
+    path('rest-auth/registration/', include('rest_auth.registration.urls')),    # 追加
+    path('snsapi/', include('sns_api.urls')),  # 追加
+    path('', include('snsapp.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
