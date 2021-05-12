@@ -3,6 +3,10 @@ from rest_framework import routers
 from .views import UserViewSet, PostViewSet, ConnectionViewSet, RequestUserRetrieveAPIView
 # , PostListAPIView, ConnectionListAPIView
 
+"""
+Viewsetで実装したAPIのみrouterで自動ルーティングで設定可能。
+（get,create→/第１引数名/、post,put,patch,delete→/第１引数名/<int:pk>）
+"""
 router = routers.DefaultRouter()
 router.register('users', UserViewSet)
 router.register('posts', PostViewSet)

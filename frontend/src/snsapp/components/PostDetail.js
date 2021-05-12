@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { getOnePost } from '../api/DrfApiFetch'
+import React, { useState, useEffect } from 'react'; //状態変数の標準ReactHooksメソッド
+import { getOnePost } from '../api/DrfApiFetch'; //作成済みのAPIメソッド
 
 const PostDetail = (props) => {
 
+  // 投稿詳細格納用の変数
   const [post, setPost] = useState([])
 
+  // ページロードと同時に実行される処理
   useEffect(() => {
-    getOnePost(this.props.params.id, setPost);
+    // 一件の投稿の詳細取得用のAPI実行と、戻り値のpostへの格納。URIパラメータはpropsから取得。
+    getOnePost(props.match.params.id, setPost);
   }, [])
 
+  // ページのJSXを定義
   return (
     <div>
       <div class="container">
         <div class="alert alert-success" role="alert">
-          {/* <p>タイトル：{{ object.title }}</p>
-          <p>投稿者：{{ object.user }}</p>
-          <p>コメント：{{ object.content }}</p>
-          <p><img src="{{object.sns_image.url}}" width=300></p> */}
+          <p>タイトル：{post.title}</p>
+          <p>投稿者：{post.user}</p>
+          <p>コメント：{post.content}</p>
+          {/* <p><img src="{{post.sns_image.url}}" width=300></p> */}
 
           {/* {% if request.user in object.like.all %} */}
           <a href="" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>

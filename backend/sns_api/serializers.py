@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from snsapp.models import Post, Connection
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
 # ユーザーモデルのシリアライザー
