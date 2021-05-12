@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework import status, views, generics, viewsets, exceptions
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+# from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, PostSerializer, ConnectionSerializer
 
 from snsapp.models import Post, Connection
@@ -25,6 +25,12 @@ class UserViewSet(viewsets.ModelViewSet):
   serializer_class = UserSerializer
   filter_backends = [filters.DjangoFilterBackend]
   filterset_fields = '__all__'
+
+class RequestUserRetrieveAPIView(views.APIView):
+  def get(self, request, *arg, **kwargs):
+    request_user = self.request.user
+    serializer = UserSerializer(instance=request_user)
+    return Response(serializer.data, status.HTTP_200_OK)
 
 # ポストモデルのCRUD用API
 # ViewSetsでまるっと作る

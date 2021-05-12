@@ -25,11 +25,13 @@ class PostSerializer(serializers.ModelSerializer):
     like = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(), many=True)
     # タイムゾーン系フィールドはフォーマットする
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only=True)
+    # ユーザーネームのみReactで出力用に取得しておく
+    username = serializers.ReadOnlyField(source='user.username')
 
     # ポストモデルから使うフィールド・規則を決定
     class Meta:
         model = Post
-        fields = ('title', 'content', 'user', 'like', 'created_at')
+        fields = ('id', 'title', 'content', 'user', 'like', 'created_at', 'username')
 
 # フォローモデルのシリアライザー
 class ConnectionSerializer(serializers.ModelSerializer):
