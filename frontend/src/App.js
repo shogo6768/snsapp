@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // 以下、ルーティング先のページコンポーネントに指定用
 import Header from './snsapp/Header';
+import Auth from './snsapp/components/Auth.js';
 import Home from './snsapp/components/Home.js';
 import PostCreate from './snsapp/components/PostCreate.js';
 import PostDetail from './snsapp/components/PostDetail';
@@ -23,6 +24,7 @@ function App() {
         <div>
           {/* アプリ全体で使用するページをルーティング */}
           <Switch>
+            <Route exact path='/auth/' component={Auth} />
             <Route exact path='/' component={Home} />
             <Route exact path='/create/' component={PostCreate} />
             <Route exact path='/detail/:id/' component={PostDetail} />
