@@ -1,23 +1,23 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from elasticsearch_dsl import Q
+# from elasticsearch_dsl import Q
 
 from .models import Post, Connection
-from .documents import PostDocument
+# from .documents import PostDocument
 
 
 class Home(LoginRequiredMixin, ListView):
     """HOMEページで、自分以外のユーザー投稿をリスト表示"""
     model = Post
-    template_name = 'home.html'
+    template_name = 'list.html'
 
     def get_queryset(self):
         """リクエストユーザーのみ除外"""
-        return Post.objects.all().exclude(user=self.request.user)
+        return Post.objects.exclude(user=self.request.user)
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -29,7 +29,7 @@ class Home(LoginRequiredMixin, ListView):
 class MyPost(LoginRequiredMixin, ListView):
     """自分の投稿のみ表示"""
     model = Post
-    template_name = 'home.html'
+    template_name = 'list.html'
 
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user)
@@ -40,7 +40,7 @@ class CreatePost(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'create.html'
     fields = ['title', 'content']
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('mypost')
 
     def form_valid(self, form):
         """投稿ユーザーをリクエストユーザーと紐付け"""
@@ -48,16 +48,47 @@ class CreatePost(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class DetailPage(LoginRequiredMixin, DetailView):
+class DetailPost(LoginRequiredMixin, DetailView):
     """投稿詳細ページ"""
     model = Post
     template_name = 'detail.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['pk'] = self.kwargs['pk']
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
+
+
+class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """投稿編集ページ"""
+    model = Post
+    template_name = 'update.html'
+    fields = ['title', 'content']
+
+
+    def get_success_url(self,  **kwargs):
+        """編集完了後の遷移先"""
+        pk = self.kwargs["pk"]
+        return reverse_lazy('detail', kwargs={"pk": pk})
+    
+    def test_func(self, **kwargs):
+        """アクセスできるユーザーを制限"""
+        pk = self.kwargs["pk"]
+        post = Post.objects.get(pk=pk)
+        return (post.user == self.request.user) 
+
+
+class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """投稿編集ページ"""
+    model = Post
+    template_name = 'delete.html'
+    success_url = reverse_lazy('mypost')
+
+    def test_func(self, **kwargs):
+        """アクセスできるユーザーを制限"""
+        pk = self.kwargs["pk"]
+        post = Post.objects.get(pk=pk)
+        return (post.user == self.request.user) 
 
 
 ###############################################################
@@ -126,7 +157,7 @@ class FollowDetail(FollowBase):
 class FollowList(LoginRequiredMixin, ListView):
     """フォローしたユーザーの投稿をリスト表示"""
     model = Post
-    template_name = 'home.html'
+    template_name = 'list.html'
 
     def get_queryset(self):
         """フォローリスト内にユーザーが含まれている場合のみクエリセット返す"""
@@ -147,14 +178,14 @@ class FollowList(LoginRequiredMixin, ListView):
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
 
-def search(request):
-    """検索用"""
-    key_word = request.GET.get('key_word')
+# def search(request):
+#     """検索用"""
+#     key_word = request.GET.get('key_word')
 
-    if key_word is not None:
-        object_list = PostDocument.search().query(Q("match", title=key_word) | Q("match", content=key_word))
-    else:
-        object_list = ''
+#     if key_word is not None:
+#         object_list = PostDocument.search().query(Q("match", title=key_word) | Q("match", content=key_word))
+#     else:
+#         object_list = ''
     
-    return render(request, 'home.html', {'object_list':object_list})
+#     return render(request, 'list.html', {'object_list':object_list})
 

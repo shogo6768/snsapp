@@ -38,11 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'snsapp.apps.SnsappConfig',
     'allauth',
     'allauth.account', 
     'allauth.socialaccount', 
-    'snsapp.apps.SnsappConfig',
-    'django_elasticsearch_dsl',
+    # 'django_elasticsearch_dsl',
 ]
 
 ELASTICSEARCH_DSL={
@@ -85,12 +85,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -137,19 +137,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 ###### ↓認証系の設定 #####
 AUTHENTICATION_BACKENDS = (
-   'django.contrib.auth.backends.ModelBackend',            #おまじない
-   'allauth.account.auth_backends.AuthenticationBackend',  #おまじない（ライブラリ使用のために追記）
+   'django.contrib.auth.backends.ModelBackend',
+   'allauth.account.auth_backends.AuthenticationBackend',  
 )
 
-ACCOUNT_AUTHENTICATION_METHOD = 'username'    #ログイン認証方法にemailを選定
-ACCOUNT_USERNAME_REQUIRED = True           #USERNAMEをモデル上で入力任意に設定
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_USERNAME_REQUIRED = True 
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'   #ユーザー登録時に、メール認証を実行する宣言（開発環境では'none'推奨）
-ACCOUNT_EMAIL_REQUIRED = True              #EMAILをモデル上で入力必須に設定
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_REQUIRED = True 
 
-SITE_ID = 1                                #おまじない。(django.contrib.sites利用時に必要な設定だが、意味は押さえなくていい。)
+SITE_ID = 1 
 
-LOGIN_REDIRECT_URL = 'home'            #ログイン成功時のリダイレクトページ                        
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'  #ログアウト成功時のリダイレクトページ
+LOGIN_REDIRECT_URL = 'home'          
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 

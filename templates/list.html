@@ -13,6 +13,7 @@
         <p>投稿者：{{item.user.username}}</p>    
 
         {% if request.user in item.like.all %}
+        <!-- elasticsearchはpkではなくidを使わないとエラーになる -->
         <a href="{% url 'like-home' item.id %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>{{item.like.count}}
         {% else %}
         <a href="{% url 'like-home' item.id %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}}
