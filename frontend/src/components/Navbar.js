@@ -8,8 +8,6 @@ import Badge from '@material-ui/core/Badge';
 import { FiLogOut } from 'react-icons/fi';
 import { withCookies } from 'react-cookie';
 
-const
-
 const Navbar = () => {
   return (
     <div>

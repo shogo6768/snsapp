@@ -1,5 +1,5 @@
 import React from 'react';
-import { } from '../api/DrfApiFetch';
+// import { } from '../api/DrfApiFetch';
 
 const PostOfFollow = () => {
   return (

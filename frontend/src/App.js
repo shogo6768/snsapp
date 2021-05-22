@@ -3,14 +3,14 @@ import './App.css';
 // snsapp配下のルーティングに必要（npm install必要）
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // 以下、共通フォーマット用
-import Navbar from './snsapp/components/Navbar';
+import Navbar from './components/Navbar';
 import Header from './components/Header';
 // 以下、ルーティング先のページコンポーネント
-import Home from './snsapp/components/Home.js';
-import PostCreate from './snsapp/components/PostCreate.js';
-import PostDetail from './snsapp/components/PostDetail';
-import PostOfMe from './snsapp/components/PostOfMe';
-import PostOfFollow from './snsapp/components/PostOfFollow';
+import Home from './components/Home.js';
+import PostCreate from './components/PostCreate.js';
+import PostDetail from './components/PostDetail';
+import PostOfMe from './components/PostOfMe';
+import PostOfFollow from './components/PostOfFollow';
 // APIcontext
 import ApiContextProvider from "./context/ApiContext";
 // Material UIライブラリ
@@ -48,7 +48,7 @@ function App() {
             <div>
               {/* アプリ全体で使用するページをルーティング */}
               <Switch>
-                <Route exact path='/auth/' component={Auth} />
+                {/* <Route exact path='/auth/' component={Auth} /> */}
                 <Route exact path='/' component={Home} />
                 <Route exact path='/create/' component={PostCreate} />
                 <Route exact path='/detail/:id/' component={PostDetail} />
@@ -65,4 +65,4 @@ function App() {
   );
 }
 
-export default withCookies(App);
+export default App;

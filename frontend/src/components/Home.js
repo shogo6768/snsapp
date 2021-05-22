@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'; //状態変数の標準ReactHooksメソッド
+import React, { useContext, useState, useEffect } from 'react'; //状態変数の標準ReactHooksメソッド
 import { Link } from 'react-router-dom';  //ページ遷移用のリンクメソッド。ページ間のパラメータ転送に便利なので、統一。
-import { getAllPosts } from '../api/DrfApiFetch'; //作成済みのAPIメソッド
+import { ApiContext } from "../context/ApiContext";
 
 const Home = () => {
 
   // 全投稿格納用のリスト型変数
   const [posts, setPosts] = useState([])
+  const { getAllPosts } = useContext(ApiContext)
 
   // ページロードと同時に実行される処理
   useEffect(() => {

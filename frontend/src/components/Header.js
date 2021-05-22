@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getRequestUser } from './api/DrfApiFetch';
+import { ApiContext } from "../context/ApiContext";
 
 
 const Header = () => {
   const [requestUser, setRequestUser] = useState([])
+  const { getRequestUser } = useContext(ApiContext);
 
   // ページロードと同時に実行される処理
   useEffect(() => {

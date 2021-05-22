@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'; //状態変数の標準ReactHooksメソッド
-import { getOnePost } from '../context/DrfApiFetch'; //作成済みのAPIメソッド
+import React, { useContext, useState, useEffect } from 'react'; //状態変数の標準ReactHooksメソッド
+import { ApiContext } from "../context/ApiContext";
+// import { getOnePost } from '../context/DrfApiFetch'; //作成済みのAPIメソッド
 
 const PostDetail = (props) => {
 
   // 投稿詳細格納用の変数
   const [post, setPost] = useState([])
+  const { getOnePost } = useContext(ApiContext)
 
   // ページロードと同時に実行される処理
   useEffect(() => {
