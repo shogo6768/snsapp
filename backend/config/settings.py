@@ -70,6 +70,7 @@ CORS_ORIGIN_WHITELIST = [
 # REST Framework共通設定
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',    # 追加
         'rest_framework.authentication.SessionAuthentication',  # 追加　セッションID認証を共通設定に追加
     ],
 }

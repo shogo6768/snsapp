@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; //状態変数の標準ReactHooksメソッド
-import { getOnePost } from '../api/DrfApiFetch'; //作成済みのAPIメソッド
+import { getOnePost } from '../context/DrfApiFetch'; //作成済みのAPIメソッド
 
 const PostDetail = (props) => {
 
