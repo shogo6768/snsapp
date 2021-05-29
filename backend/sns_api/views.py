@@ -27,6 +27,7 @@ class UserViewSet(viewsets.ModelViewSet):
   serializer_class = UserSerializer
   filter_backends = [filters.DjangoFilterBackend]
   filterset_fields = '__all__'
+  permission_classes = (permissions.AllowAny,)
 
 # ログインユーザーのオブジェクトをリターンするAPI
 class RequestUserRetrieveAPIView(generics.ListAPIView):
