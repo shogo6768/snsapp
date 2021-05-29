@@ -156,7 +156,7 @@ const loginReducer = (state, action) => {
 
 const Login = (props) => {
   // 上記のスタイルを使用することを宣言
-  // const classes = useStyles();
+  const classes = useStyles();
   // Reducerで管理するログイン状態を、dispatchという関数で変更できる様になった
   const [state, dispatch] = useReducer(loginReducer, initialState);
 
@@ -207,8 +207,8 @@ const Login = (props) => {
         // レスポンスで返ってくるトークンを、現在のトークンとしてcookiesに格納する
         props.cookies.set("current-token", res.data.token);
         res.data.token
-          // 成功すればprofilesのページへジャンプ
-          ? (window.location.href = "/profiles")
+          // 成功すればトップページへジャンプ
+          ? (window.location.href = "/snsapp")
           // 失敗すればルートURLへジャンプ
           : (window.location.href = "/");
         dispatch({ type: FETCH_SUCCESS });
@@ -220,7 +220,7 @@ const Login = (props) => {
       try {
         dispatch({ type: START_FETCH });
         await axios.post(
-          "http://127.0.0.1:8000/snsapi/users/",
+          "http://127.0.0.1:8000/snsapi/api/users/",
           state.credentialsReg,
           {
             headers: { "Content-Type": "application/json" },
@@ -247,12 +247,10 @@ const Login = (props) => {
       {/* submit時にログインを呼ぶフォームを作成 */}
       <form onSubmit={login}>
         {/* material-uiのサンプル */}
-        {/* <div className={classes.paper}> */}
-        <div className="paper">
+        <div className={classes.paper}>
           {/* ローディングしている時のみ、ロード状態を表示する工夫 */}
           {state.isLoading && <CircularProgress />}
-          <Avatar className="avatar">
-            {/* <Avatar className={classes.avatar}> */}
+          <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
           {/* フォームラベルの表示をログインビューか否かで切り替える */}
@@ -266,7 +264,7 @@ const Login = (props) => {
               variant="outlined"
               margin="normal"
               fullWidth
-              label="Email"
+              label="Username"
               name="username"
               value={state.credentialsLog.username}
               onChange={inputChangedLog()}
@@ -278,9 +276,9 @@ const Login = (props) => {
               variant="outlined"
               margin="normal"
               fullWidth
-              label="Email"
-              name="email"
-              value={state.credentialsReg.email}
+              label="Username"
+              name="username"
+              value={state.credentialsReg.username}
               onChange={inputChangedReg()}
               autoFocus
             />
@@ -312,8 +310,7 @@ const Login = (props) => {
           )}
 
           {/* エラーメッセージ用の出力 */}
-          {/* <span className={classes.spanError}>{state.error}</span> */}
-          <span className="spanError">{state.error}</span>
+          <span className={classes.spanError}>{state.error}</span>
 
           {/* サブミット用のボタン */}
           {state.isLoginView ? (
@@ -321,8 +318,7 @@ const Login = (props) => {
             // passwordまたは、usernameが空欄の場合は、ボタンを非アクティブに
             !state.credentialsLog.password || !state.credentialsLog.username ? (
               <Button
-                // className={classes.submit}
-                className="submit"
+                className={classes.submit}
                 type="submit"
                 fullWidth
                 disabled
@@ -333,8 +329,7 @@ const Login = (props) => {
               </Button>
             ) : (
               <Button
-                // className={classes.submit}
-                className="submit"
+                className={classes.submit}
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -343,11 +338,10 @@ const Login = (props) => {
                 Login
               </Button>
             )
-          ) : !state.credentialsReg.password || !state.credentialsReg.email ? (
+          ) : !state.credentialsReg.password || !state.credentialsReg.username ? (
             // こっちは新規登録の場合
             <Button
-              // className={classes.submit}
-              className="submit"
+              className={classes.submit}
               type="submit"
               fullWidth
               disabled
@@ -358,8 +352,7 @@ const Login = (props) => {
             </Button>
           ) : (
             <Button
-              // className={classes.submit}
-              className="submit"
+              className={classes.submit}
               type="submit"
               fullWidth
               variant="contained"
@@ -370,8 +363,7 @@ const Login = (props) => {
           )}
 
           {/* ログインとレジスターを切り替え用のメッセージ */}
-          {/* <span onClick={() => toggleView()} className={classes.span}> */}
-          <span onClick={() => toggleView()} className="span">
+          <span onClick={() => toggleView()} className={classes.span}>
             {state.isLoginView ? "Create Account ?" : "Back to login ?"}
           </span>
         </div>

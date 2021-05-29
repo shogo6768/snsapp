@@ -1,23 +1,122 @@
-// import React from 'react';
-// // import { } from '../api/DrfApiFetch';
+import React, { useContext, useEffect } from 'react'; //状態変数の標準ReactHooksメソッド
+import { ApiContext } from "../context/ApiContext";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from 'react-router-dom';  //ページ遷移用のリンクメソッド。ページ間のパラメータ転送に便利なので、統一。
+// 追加
+import Grid from '@material-ui/core/Grid'
 
-// const PostOfFollow = () => {
-//   return (
-//     <div>
-//       <div class="container mt-3">
-//         <div class="alert alert-success" role="alert">
-//           {/* <p>タイトル：<a href="{% url 'detail' item.pk %}">{{ item.title }}</a></p>
-//           <p>投稿者：{{ item.user }}</p> */}
+const PostOfMe = () => {
 
-//           <a href="{% url 'like-home' item.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>
-//           <a href="{% url 'like-home' item.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>
+  // API周りの変数取得
+  const { allPosts, getAllPosts, followList, requestUser, toggleOnePostLike, toggleOneUserFollow } = useContext(ApiContext);
 
-//           <a href="{% url 'follow-home' item.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
-//           <a href="{% url 'follow-home' item.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
+  useEffect(() => {
+    getAllPosts();
+  }, [])
 
-// export default PostOfFollow
+  const postsOfFollow = allPosts.filter((post) => {
+    return followList.includes(post.user)
+  })
+
+  // いいねボタンの非同期処理関数
+  const toggleLike = (event) => {
+    // ボタンクリックのクラスリストで判定
+    const evt_classes = event.currentTarget.classList
+
+    // add-colorがあるか否かで、クラスつけ外し処理を分岐
+    if (evt_classes.contains("add-color")) {
+      event.currentTarget.classList.remove("add-color");
+    }
+    else {
+      event.currentTarget.classList.add("add-color");
+    }
+    console.log(event.currentTarget.classList)
+
+    // API関数は共通⇨DRF側で処理を分岐。
+    toggleOnePostLike(event.currentTarget.nextElementSibling.id);
+  };
+
+  // フォローボタンの非同期処理関数
+  const toggleFollow = (event) => {
+    // ボタンクリックのクラスリストで判定
+    const evt_classes = event.currentTarget.classList
+
+    // btn-dangerがあるか否かで、クラスつけ外し処理を分岐
+    if (evt_classes.contains("btn-danger")) {
+      event.currentTarget.classList.remove("btn-danger");
+      event.currentTarget.classList.add("btn-primary");
+      event.currentTarget.innerHTML = "フォロー"
+    }
+    else {
+      event.currentTarget.classList.remove("btn-primary");
+      event.currentTarget.classList.add("btn-danger");
+      event.currentTarget.innerHTML = "フォロー解除"
+    }
+    // API関数は共通⇨DRF側で処理を分岐。
+    toggleOneUserFollow(event.target.id);
+  };
+
+  // ページのJSXを定義
+  return (
+    <Grid container>
+      <Grid item xs={12}>
+        <div className="container mt-3">
+          {postsOfFollow.map((post) =>
+            <div className="alert alert-success" role="alert">
+              <p>
+                タイトル：<Link to={`/snsapp/detail/${post.id}`}>{post.title}</Link>
+              </p>
+              <p>
+                投稿者：{post.username}
+              </p>
+              {/* いいねボタン */}
+              {
+                post.like.includes(requestUser.id) ?
+                  <FontAwesomeIcon
+                    onClick={toggleLike}
+                    icon={faHeart}
+                    className="like-btn add-color"
+                    tabIndex="-1"
+                    role="button"
+                    aria-disabled="true"
+                  /> :
+                  <FontAwesomeIcon
+                    onClick={toggleLike}
+                    icon={faHeart}
+                    className="like-btn"
+                    tabIndex="-1"
+                    role="button"
+                    aria-disabled="true"
+                  />
+              }
+
+              {/* フォローボタン */}
+              {
+                followList.includes(post.user) ?
+                  <button
+                    onClick={toggleFollow}
+                    id={post.id}
+                    className="btn btn-danger ms-3"
+                    tabindex="-1"
+                    role="button"
+                    aria-disabled="true"
+                  >フォロー解除</button> :
+                  <button
+                    onClick={toggleFollow}
+                    id={post.id}
+                    className="btn btn-primary ms-3"
+                    tabindex="-1"
+                    role="button"
+                    aria-disabled="true"
+                  >フォロー</button>
+              }
+            </div>
+          )}
+        </div>
+      </Grid>
+    </Grid>
+  )
+}
+
+export default PostOfMe

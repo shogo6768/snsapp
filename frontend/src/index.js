@@ -17,7 +17,7 @@ const routing = (
     <BrowserRouter>
       <CookiesProvider>
         <Route exact path="/" component={Login} />
-        {/* <Route path="/snsapp" component={App} /> */}
+        <Route path="/snsapp" component={App} />
       </CookiesProvider>
     </BrowserRouter>
   </React.StrictMode>

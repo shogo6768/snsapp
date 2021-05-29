@@ -42,11 +42,12 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'snsapp.apps.SnsappConfig',
-    'sns_api.apps.SnsApiConfig',    # 追加　SNSappのAPI用アプリ
+    'django_rest_allauth',          # 追加　DRF-allauth
     'rest_framework',               # 追加　DRFライブラリ全般
-    'rest_auth',                    # 追加　DRF-allauthの標準API一式
-    'rest_auth.registration',       # 追加　DRF-allauthのWebコンソール機能
     'rest_framework.authtoken',     # 追加　DRF-allauthのloginに使用
+    'sns_api.apps.SnsApiConfig',    # 追加　SNSappのAPI用アプリ
+    # 'rest_auth',                    # 追加　DRF-allauthの標準API一式
+    # 'rest_auth.registration',       # 追加　DRF-allauthのWebコンソール機能
     'django_filters',               # 追加　フィルタ付きのAPIビュー用
     'corsheaders',                  # 追加　Reactサーバーからのアクセス許可機能
 ]
@@ -70,9 +71,14 @@ CORS_ORIGIN_WHITELIST = [
 # REST Framework共通設定
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',    # 追加
-        'rest_framework.authentication.SessionAuthentication',  # 追加　セッションID認証を共通設定に追加
+        'rest_framework.authentication.TokenAuthentication',        # 追加　トークン認証をデフォルト設定に
+        # 'rest_framework.authentication.BasicAuthentication',      # 追加
+        # 'rest_framework.authentication.SessionAuthentication',    # 追加　セッションID認証を共通設定に追加
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',  # 追加　パーミッションを全許可にしておく
+    ]
 }
 
 ROOT_URLCONF = 'config.urls'
@@ -159,7 +165,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username'  # ログイン認証方法にemail�
 ACCOUNT_USERNAME_REQUIRED = True  # USERNAMEをモデル上で入力任意に設定
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # ユーザー登録時に、メール認証を実行する宣言（開発環境では'none'推奨）
-ACCOUNT_EMAIL_REQUIRED = True  # EMAILをモデル上で入力必須に設定
+ACCOUNT_EMAIL_REQUIRED = False  # EMAILをモデル上で入力必須に設定
 
 SITE_ID = 1  # おまじない。(django.contrib.sites利用時に必要な設定だが、意味は押さえなくていい。)
 

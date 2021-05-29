@@ -15,10 +15,9 @@ import ApiContextProvider from "./context/ApiContext";
 // 以下、個人で追加
 // 以下、ルーティング先のページコンポーネント
 import Home from './components/Home';
-// import PostCreate from './components/PostCreate';
-// import PostDetail from './components/PostDetail';
-// import PostOfMe from './components/PostOfMe';
-// import PostOfFollow from './components/PostOfFollow';
+import PostDetail from './components/PostDetail';
+import PostOfMe from './components/PostOfMe';
+import PostOfFollow from './components/PostOfFollow';
 // snsapp配下のルーティングに必要（npm install必要）
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // React-bootstrapをインポート（npm install必要）
@@ -47,18 +46,13 @@ function App() {
         <Navbar />
         <div className="container">
           <Router>
-            <div>
-              {/* アプリ全体で使用するページをルーティング */}
-              <Switch>
-                {/* <Route exact path='/' component={Home} /> */}
-                {/* <Route exact path='/create' component={PostCreate} />
-                <Route exact path='/detail/:id' component={PostDetail} />
-                <Route exact path='/mypost' component={PostOfMe} />
-                <Route exact path='/follow-list' component={PostOfFollow} /> */}
-                {/* 上記以外のURLには、Not foundページのルーティング */}
-                <Route render={() => <h4>not found...</h4>} />
-              </Switch>
-            </div>
+            <Switch>
+              <Route exact path='/snsapp/' component={Home} />
+              <Route exact path='/snsapp/detail/:id' component={PostDetail} />
+              <Route exact path='/snsapp/mypost' component={PostOfMe} />
+              <Route exact path='/snsapp/follow-list' component={PostOfFollow} />
+              <Route render={() => <h4>not found...</h4>} />
+            </Switch>
           </Router>
         </div>
       </MuiThemeProvider>
