@@ -1,56 +1,92 @@
 from django.http.response import Http404
-from django.views import View
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework import status, authentication, generics, viewsets, permissions, views
+from rest_framework import status, generics, viewsets, permissions, views
 from rest_framework.response import Response
-# from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, PostSerializer, ConnectionSerializer
 
 from snsapp.models import Post, Connection
 from django.contrib.auth.models import User
 
-
-# Create your views here.
-###############################################################
-
 """
 以下、API用のビュー
 ユーザーのログイン、ログアウト処理は
-rest-authに含められている
+rest-framework.authtokenのauthenと、React側のtoken廃棄処理にて実装のため、
+本views.pyファイル内には記述なし
 """
 
-# ユーザーモデルのCRUD用API
-# ViewSetsでまるっと作る
+"""Viewsetでまるっと実装"""
+#----------------------------------------------------------------------
+#  関数名：UserViewSet
+#  概　要：ユーザーモデルのCRUD用API
+#  引　数：実在するユーザーIDもしくはなし
+#  戻り値：1件または複数件のユーザーオブジェクトJSON
+#----------------------------------------------------------------------
 class UserViewSet(viewsets.ModelViewSet):
-  queryset = User.objects.all()
-  serializer_class = UserSerializer
-  filter_backends = [filters.DjangoFilterBackend]
-  filterset_fields = '__all__'
-  permission_classes = (permissions.AllowAny,)
+  queryset = User.objects.all()                     # 処理するオブジェクトの最大範囲を宣言
+  serializer_class = UserSerializer                 # I/OのJSONの型として使用するserializerを宣言
+  filter_backends = [filters.DjangoFilterBackend]   # クエリフィルターを使える設定。具体例：(URL)?user_id=2。
+  filterset_fields = '__all__'                      # フィルター対象にできるフィールドを宣言
+  permission_classes = (permissions.AllowAny,)      # APIの認証レベルを宣言。settings.pyでデフォルトにしたIsAuthenticationよりも緩和。
 
-# ログインユーザーのオブジェクトをリターンするAPI
-class RequestUserRetrieveAPIView(generics.ListAPIView):
-  queryset = User.objects.all()
-  serializer_class = UserSerializer
-  authentication_classes = (authentication.TokenAuthentication,)
-  permission_classes = (permissions.IsAuthenticated,)
-
-  def get_queryset(self):
-      return self.queryset.filter(id=self.request.user.id)
-
-# ポストモデルのCRUD用API
-# ViewSetsでまるっと作る
+#----------------------------------------------------------------------
+#  関数名：PostViewSet
+#  概　要：ポストモデルのCRUD用API
+#  引　数：実在するポストIDもしくはなし
+#  戻り値：1件または複数件のポストオブジェクトJSON
+#----------------------------------------------------------------------
 class PostViewSet(viewsets.ModelViewSet):
   queryset = Post.objects.all()
   serializer_class = PostSerializer
   filter_backends = [filters.DjangoFilterBackend]
   filterset_fields = '__all__'
 
-# ログインユーザーでお気に入りをトグルするAPI
+#----------------------------------------------------------------------
+#  関数名：ConnectionViewSet
+#  概　要：コネクションモデルのCRUD用API
+#  引　数：実在するコネクションIDもしくはなし
+#  戻り値：1件または複数件のコネクションオブジェクトJSON
+#----------------------------------------------------------------------
+class ConnectionViewSet(viewsets.ModelViewSet):
+  queryset = Connection.objects.all()
+  serializer_class = ConnectionSerializer
+  filter_backends = [filters.DjangoFilterBackend]
+  filterset_fields = '__all__'
+
+
+"""自作Viewで個別に実装"""
+#----------------------------------------------------------------------
+#  関数名：RequestUserRetrieveAPIView
+#  概　要：リクエストユーザーオブジェクトを取得するAPI
+#  引　数：なし
+#  戻り値：1件のログイン中のユーザーオブジェクトJSON
+#----------------------------------------------------------------------
+class RequestUserRetrieveAPIView(generics.ListAPIView):
+  queryset = User.objects.all()
+  serializer_class = UserSerializer
+
+  def get_queryset(self):
+      return self.queryset.filter(id=self.request.user.id)
+
+#----------------------------------------------------------------------
+#  関数名：RequestUserConnectionRetrieveAPIView
+#  概　要：リクエストユーザーをuserに持つコネクションオブジェクトを取得するAPI
+#  引　数：なし
+#  戻り値：複数件のコネクションオブジェクトJSON
+#----------------------------------------------------------------------
+class RequestUserConnectionRetrieveAPIView(generics.ListAPIView):
+  queryset = Connection.objects.all()
+  serializer_class = ConnectionSerializer
+
+  def get_queryset(self):
+      return self.queryset.filter(user=self.request.user.id)
+
+#----------------------------------------------------------------------
+#  関数名：LikeToggleAPIView
+#  概　要：1件のポストオブジェクトに対する、リクエストユーザーオブジェクトのいいね状態をトグルするAPI
+#  引　数：実在するポストID
+#  戻り値：ステータスコードのみ
+#----------------------------------------------------------------------
 class LikeToggleAPIView(views.APIView):
-  authentication_classes = (authentication.TokenAuthentication,)
-  permission_classes = (permissions.IsAuthenticated,)
 
   def get(self, request, *args, **kwargs):
     try:
@@ -65,34 +101,13 @@ class LikeToggleAPIView(views.APIView):
 
     return Response(status=status.HTTP_200_OK)
 
-# # ポストモデルを全件取得用API
-# # リクエストユーザーのフォロー中のみなどで検索条件をかけるために別で実装
-# class PostListAPIView(generics.ListAPIView):
-#   queryset = Post.objects.all()
-#   serializer_class = PostSerializer
-#   filter_backends = [filters.DjangoFilterBackend]
-#   filterset_fields = '__all__'
-
-# コネクションモデルのCRUD用API
-# ViewSetsでまるっと作る
-class ConnectionViewSet(viewsets.ModelViewSet):
-  queryset = Connection.objects.all()
-  serializer_class = ConnectionSerializer
-  filter_backends = [filters.DjangoFilterBackend]
-  filterset_fields = '__all__'
-
-class RequestUserConnectionRetrieveAPIView(generics.ListAPIView):
-  queryset = Connection.objects.all()
-  serializer_class = ConnectionSerializer
-  authentication_classes = (authentication.TokenAuthentication,)
-  permission_classes = (permissions.IsAuthenticated,)
-
-  def get_queryset(self):
-      return self.queryset.filter(user=self.request.user.id)
-
+#----------------------------------------------------------------------
+#  関数名：FollowToggleAPIView
+#  概　要：1件のユーザーオブジェクトに対する、リクエストユーザーオブジェクトのフォロー状態をトグルするAPI
+#  引　数：実在するユーザーID
+#  戻り値：ステータスコードのみ
+#----------------------------------------------------------------------
 class FollowToggleAPIView(views.APIView):
-  authentication_classes = (authentication.TokenAuthentication,)
-  permission_classes = (permissions.IsAuthenticated,)
 
   def get(self, request, *args, **kwargs):
     try:
@@ -106,10 +121,3 @@ class FollowToggleAPIView(views.APIView):
     else:
       my_connection[0].following.add(target_user)
     return Response(status=status.HTTP_200_OK)
-
-# # コネクションモデルを全件取得用API
-# class ConnectionListAPIView(generics.ListAPIView):
-#   queryset = Connection.objects.all()
-#   serializer_class = ConnectionSerializer
-#   filter_backends = [filters.DjangoFilterBackend]
-#   filterset_fields = '__all__'

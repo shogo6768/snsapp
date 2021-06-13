@@ -52,7 +52,7 @@ const Navbar = (props) => {
   };
 
   // APIの共通URL部
-  const API_BASE_URL = 'http://127.0.0.1:8000/snsapi/api'
+  const API_BASE_URL = 'http://127.0.0.1:8000/api/v1'
 
   // 送信処理
   const handleSubmit = async (event) => {

@@ -220,7 +220,7 @@ const Login = (props) => {
       try {
         dispatch({ type: START_FETCH });
         await axios.post(
-          "http://127.0.0.1:8000/snsapi/api/users/",
+          "http://127.0.0.1:8000/api/v1/users/",
           state.credentialsReg,
           {
             headers: { "Content-Type": "application/json" },

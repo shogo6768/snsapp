@@ -36,26 +36,6 @@ const PostOfMe = () => {
     toggleOnePostLike(event.currentTarget.nextElementSibling.id);
   };
 
-  // // フォローボタンの非同期処理関数
-  // const toggleFollow = (event) => {
-  //   // ボタンクリックのクラスリストで判定
-  //   const evt_classes = event.currentTarget.classList
-
-  //   // btn-dangerがあるか否かで、クラスつけ外し処理を分岐
-  //   if (evt_classes.contains("btn-danger")) {
-  //     event.currentTarget.classList.remove("btn-danger");
-  //     event.currentTarget.classList.add("btn-primary");
-  //     event.currentTarget.innerHTML = "フォロー"
-  //   }
-  //   else {
-  //     event.currentTarget.classList.remove("btn-primary");
-  //     event.currentTarget.classList.add("btn-danger");
-  //     event.currentTarget.innerHTML = "フォロー解除"
-  //   }
-  //   // API関数は共通⇨DRF側で処理を分岐。
-  //   toggleOneUserFollow(event.target.id);
-  // };
-
   // ページのJSXを定義
   return (
     <Grid container>
@@ -89,27 +69,6 @@ const PostOfMe = () => {
                     aria-disabled="true"
                   />
               }
-
-              {/* フォローボタン
-              {
-                followList.includes(post.user) ?
-                  <button
-                    onClick={toggleFollow}
-                    id={post.id}
-                    className="btn btn-danger ms-3"
-                    tabindex="-1"
-                    role="button"
-                    aria-disabled="true"
-                  >フォロー解除</button> :
-                  <button
-                    onClick={toggleFollow}
-                    id={post.id}
-                    className="btn btn-primary ms-3"
-                    tabindex="-1"
-                    role="button"
-                    aria-disabled="true"
-                  >フォロー</button>
-              } */}
             </div>
           )}
         </div>

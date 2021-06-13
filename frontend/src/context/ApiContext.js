@@ -5,6 +5,32 @@ import axios from 'axios'
 // 外部から呼べる様にエクスポート
 export const ApiContext = createContext();
 
+/* 
+  APIを叩く構文
+  //関数コンポーネントを定義。asyncをつけておくと複数の非同期処理を走らせられる場合は実行する。という整合を自動で行ってくれる。
+  const getAPI = async () => {
+    try {
+      //API実行のレスポンス（JSON）をresに格納する形でtry実行する。awaitをつけておくと、レスポンスが返るまで処理を止めてくれる。
+      const res = await axios.get(
+        リクエストするAPIのURL,
+        引数,
+        //ヘッダーに含めたい情報、引数の情報などを宣言
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`
+          },
+        }
+      )
+      res.dataに対する処理
+    }
+    //tryで実行した処理にエラーが起きた時、実行される
+    catch{
+      エラーのログ出力など
+    }
+  }
+*/
+
 // cookie情報格納用にprops利用
 const ApiContextProvider = (props) => {
   // API用の状態変数
@@ -24,7 +50,7 @@ const ApiContextProvider = (props) => {
   const [editedOnePost, setEditedOnePost] = useState({ id: "", title: "", content: "", like: [] });
 
   // APIの共通URL部
-  const API_BASE_URL = 'http://127.0.0.1:8000/snsapi/api'
+  const API_BASE_URL = 'http://127.0.0.1:8000/api/v1'
 
   // アプリ起動時に呼ぶAPIを定義
   useEffect(() => {

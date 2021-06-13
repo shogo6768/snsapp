@@ -56,7 +56,7 @@ const PostDetail = (props) => {
       <div className="container">
         <div className="alert alert-success" role="alert">
           <p>タイトル：{onePost.title}</p>
-          <p>投稿者：{onePost.user}</p>
+          <p>投稿者：{onePost.username}</p>
           <p>コメント：{onePost.content}</p>
 
           {/* いいねボタン */}
