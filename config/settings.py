@@ -191,3 +191,5 @@ SITE_ID = 1
 
 LOGIN_REDIRECT_URL = 'home'          
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
