@@ -1,0 +1,15 @@
+runtime: python39
+instance_class: F1
+env: standard
+service: default
+# 下記は プロジェクト名.wsgi:application のように記述
+entrypoint: gunicorn -b :$PORT config.wsgi:application
+ 
+ 
+handlers:
+  - url: /static
+    static_dir: staticfiles/
+  # 下記はhttpでアクセスがあった際、httpsにリダイレクトするための記述
+  - url: .*
+    secure: always
+    script: auto

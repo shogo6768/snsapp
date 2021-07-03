@@ -11,21 +11,30 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Read .env if exists
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'h43&^c57q6+412$crxl3)i68ef=l!#fs=8vha+7di&t4i$u8w9'
+SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+if os.getenv('GAE_APPLICATION', None):
+    # 本番環境
+    DEBUG = True
+    ALLOWED_HOSTS = ['snsapp-316122.an.r.appspot.com',]
+else:
+    # 開発環境
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,12 +88,47 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.getenv('GAE_APPLICATION', None):
+    # GAE本番環境
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '/cloudsql/{}'.format(env('DB_HOST')),
+            'USER': env('DB_USER'),
+            'PASSWORD': env('DB_PASSWORD'),
+            'NAME': env('DB_NAME'),
+        }
     }
-}
+else:
+    # 開発環境
+    # 事前に./cloud_sql_proxyを実行してプロキシ経由でアクセスできるようにする必要がある。
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'USER': env('DB_USER'),
+            'PASSWORD': env('DB_PASSWORD'),
+            'NAME': env('DB_NAME'),
+        }
+    }
+#     }
+
+#     # DATABASES = {
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.sqlite3',
+#     #     'NAME': BASE_DIR / 'db.sqlite3',
+#     #     }
+#     # }
+
+# DATABASES = {"default": env.db()}
+
+# # If the flag as been set, configure to use proxy
+# if os.getenv("USE_CLOUD_SQL_AUTH_PROXY", None):
+#     DATABASES["default"]["HOST"] = "127.0.0.1"
+#     DATABASES["default"]["PORT"] = 3306
+
+    
 
 
 # Password validation
@@ -125,6 +169,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
