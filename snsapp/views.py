@@ -4,8 +4,10 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+# from elasticsearch_dsl import Q
 
 from .models import Post, Connection
+# from .documents import PostDocument
 
 
 class Home(LoginRequiredMixin, ListView):
@@ -161,9 +163,28 @@ class FollowList(LoginRequiredMixin, ListView):
         my_connection = Connection.objects.get_or_create(user=self.request.user)
         all_follow = my_connection[0].following.all()
         return Post.objects.filter(user__in=all_follow)
+        
+        """
+        元々のコード(all_follow = ...より以下)
+        for user in all_follow:
+           return Post.objects.filter(user=user)
+        
+        これだと1user分のクエリしかリターンしない
+        """
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
+
+# def search(request):
+#     """検索用"""
+#     key_word = request.GET.get('key_word')
+
+#     if key_word is not None:
+#         object_list = PostDocument.search().query(Q("match", title=key_word) | Q("match", content=key_word))
+#     else:
+#         object_list = ''
+    
+#     return render(request, 'list.html', {'object_list':object_list})
 
